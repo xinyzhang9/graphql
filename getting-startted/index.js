@@ -11,6 +11,7 @@ const {
   GraphQLBoolean,
   GraphQLNonNull,
   GraphQLList,
+  GraphQLInputObjectType,
 } = require('graphql');
 const PORT = process.env.PORT || 3000;
 const server = express();
@@ -38,6 +39,24 @@ const videoType = new GraphQLObjectType({
     },
   },
 });
+
+const videotypeInputType = new GraphQLInputObjectType({
+  name: 'VideoInput',
+  fields: {
+    title: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'The title of the video.',
+    },
+    duration: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'The duration of the video.',
+    },
+    released: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+      description: 'Whether or not the video is released',
+    },
+  }
+})
 
 const queryType = new GraphQLObjectType({
   name: 'QueryType',
@@ -69,21 +88,12 @@ const mutationType = new GraphQLObjectType({
     createVideo: {
       type: videoType,
       args: {
-        title: {
-          type: new GraphQLNonNull(GraphQLString),
-          description: 'The title of the video.',
-        },
-        duration: {
-          type: new GraphQLNonNull(GraphQLInt),
-          description: 'The duration of the video.',
-        },
-        released: {
-          type: new GraphQLNonNull(GraphQLBoolean),
-          description: 'Whether or not the video is released',
+        video: {
+          type: new GraphQLNonNull(videotypeInputType),
         },
       },
       resolve: (_, args) => {
-        return createVideo(args);
+        return createVideo(args.video);
       }
     }
   }
