@@ -94,20 +94,10 @@ const schema = new GraphQLSchema({
   mutation: mutationType,
 })
 
-const resolvers = {
-  video: () => ({
-    id: '1',
-    title: 'bar',
-    duration: 180,
-    watched: true,
-  }),
-  videos: () => videos,
-};
 
 server.use('/graphql',graphqlHTTP({
   schema,
   graphiql: true,
-  rootValue: resolvers,
 
 }))
 
