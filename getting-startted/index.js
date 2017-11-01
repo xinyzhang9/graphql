@@ -17,12 +17,14 @@ const PORT = process.env.PORT || 3000;
 const server = express();
 
 const { getVideoById, getVideos, createVideo } = require('./src/data');
+const nodeInterface = require('./src/node');
+
 const videoType = new GraphQLObjectType({
   name: 'Video',
   description: 'a video on YouTube.',
   fields: {
     id: {
-      type: GraphQLID,
+      type: new GraphQLNonNull(GraphQLID),
       description: 'The id of the video.',
     },
     title: {
@@ -33,12 +35,15 @@ const videoType = new GraphQLObjectType({
       type: GraphQLInt,
       description: 'The duration of the video.',
     },
-    watched: {
+    released: {
       type: GraphQLBoolean,
-      description: 'Whether the viewer has watched the video.',
+      description: 'Whether the video has been released.',
     },
   },
+  interfaces: [nodeInterface],
 });
+
+exports.videoType = videoType;
 
 const videotypeInputType = new GraphQLInputObjectType({
   name: 'VideoInput',
